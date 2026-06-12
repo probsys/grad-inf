@@ -1,0 +1,12 @@
+resolver: lts-23.14
+compiler: ghc-9.8.4
+
+packages:
+  - .
+
+extra-deps:
+- random-fu-multivariate-0.1.2.1@sha256:b8b3adcdb01269480b3d28dae1e9c9a040834b9974c434d6996d3e1545c4d4f7,1439
+- backprop-0.2.7.2@sha256:c1fb006b55444df07bb106b1e9c6235a5d934dacd03a984f31dc9529e2ecbde0,2760
+
+allow-newer: true
+
