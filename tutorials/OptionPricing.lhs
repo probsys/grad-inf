@@ -5,6 +5,9 @@ The model simulates the price of an asset in accordance with the
 and returns the expected payoff of a
 [European-style option](https://en.wikipedia.org/wiki/Option_style).
 
+Writing the Model
+-----------------
+
 First, we define the model below.
 
 \begin{code}
@@ -65,6 +68,9 @@ optionPricingModel n theta = do
     else
         0
 \end{code}
+
+Differentiating the Model
+-------------------------
 
 We now apply GradInf to compute gradient estimates.
 For our inference algorithm, we will

@@ -11,6 +11,10 @@ stack.yaml.lock
 # Local dev config (kept locally, not shipped)
 .hlint.yaml
 
+# mkdocs build outputs
+docs/mkdocs/site/
+docs/mkdocs/docs/examples/*.md
+
 # Python
 docs/.venv/
 __pycache__/

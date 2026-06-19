@@ -1,0 +1,60 @@
+name: Docs
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: pip
+          cache-dependency-path: docs/requirements.txt
+
+      - name: Install pandoc
+        run: sudo apt-get update && sudo apt-get install -y pandoc
+
+      - name: Install Python deps
+        run: pip install -r docs/requirements.txt
+
+      - name: Generate tutorial pages from .lhs
+        run: |
+          mkdir -p docs/mkdocs/docs/examples
+          for f in QueueModel OptionPricing GeneTranscription; do
+            pandoc --from=markdown+lhs --to=commonmark "tutorials/${f}.lhs" \
+              -o "docs/mkdocs/docs/examples/${f}.md"
+          done
+
+      - name: Build mkdocs site
+        run: cd docs/mkdocs && mkdocs build
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs/mkdocs/site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

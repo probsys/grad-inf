@@ -1,0 +1,22 @@
+p {
+  margin: 0 0 18px;
+}
+
+.md-typeset h1, .md-typeset h2, .md-typeset h3, .md-typeset h4, .md-typeset h5, .md-typeset h6 {
+ margin-bottom: 18px;
+ color: black;
+ font-weight: 500;
+}
+
+.md-typeset .output {
+  color: black;
+  background: white;
+}
+
+/* Force the inline index-page logo to its `height` attribute. Material's
+   `.md-typeset img { height: auto }` otherwise overrides it. */
+.md-typeset img[alt="GradInf Logo"] {
+  height: 80px !important;
+  width: auto !important;
+}
+
