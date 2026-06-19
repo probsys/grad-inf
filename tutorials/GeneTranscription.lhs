@@ -18,6 +18,9 @@ and apply a loss function that measures the relative error between
 the simulated mean copy numbers of mRNA and protein and ground truth
 reference values.
 
+Writing the Model
+-----------------
+
 \begin{code}
 {-# LANGUAGE RebindableSyntax #-}
 {-# LANGUAGE ScopedTypeVariables #-}
@@ -33,8 +36,6 @@ import System.Random (setStdGen, mkStdGen)
 import Data.List (transpose)
 import Numeric.GradInf.Primitives.DeterministicPrimitives
 import Numeric.GradInf.Primitives.Uniform
-import Numeric.GradInf.Primitives.Categorical
-import Numeric.GradInf.Primitives.CategoricalScore
 import Numeric.GradInf.Primitives.CategoricalMaxIndep
 import Numeric.GradInf.Primitives.FoldP
 import Numeric.GradInf.Primitives.IterateP
@@ -54,15 +55,12 @@ n = 1000
 capT :: Double
 capT = 2.5
 
-data PrimitiveChoice = MaxIndepPrimitive | ScorePrimitive | NoAnnotationPrimitive
-
 geneTranscriptionKernel ::
     forall m d i b mat.
     (DeterministicPrimitives d i b mat,
-    Categorical m d [i], CategoricalScore m d [i],
     CategoricalMaxIndep m d [i], Uniform m d)
-    => PrimitiveChoice -> [d] -> ([i], d, [d]) -> m ([i], d, [d])
-geneTranscriptionKernel primitiveChoice theta (x, t, acc) = do
+    => [d] -> ([i], d, [d]) -> m ([i], d, [d])
+geneTranscriptionKernel theta (x, t, acc) = do
 
     if extractDouble t > capT then
         return (x, t, acc)
@@ -79,10 +77,7 @@ geneTranscriptionKernel primitiveChoice theta (x, t, acc) = do
         let totalRate :: d = sum rates
         let probs :: [d] = map (\q -> q / totalRate) rates
 
-        x' <- case primitiveChoice of
-            MaxIndepPrimitive -> categoricalMaxIndep (probs, [[m + 1, p], [m, p + 1], [m - 1, p], [m, p - 1]])
-            ScorePrimitive -> categoricalScore (probs, [[m + 1, p], [m, p + 1], [m - 1, p], [m, p - 1]])
-            NoAnnotationPrimitive -> categorical (probs, [[m + 1, p], [m, p + 1], [m - 1, p], [m, p - 1]])
+        x' <- categoricalMaxIndep (probs, [[m + 1, p], [m, p + 1], [m - 1, p], [m, p - 1]])
 
         u <- uniform
         let t' = t + log (1 / u) / totalRate
@@ -97,14 +92,13 @@ geneTranscriptionModel ::
     forall m d i b mat.
     (DeterministicPrimitives d i b mat, IterateP m ([i], d, [d]),
     FoldrP m ([i], d, [d]) ([d], d),
-    Categorical m d [i], CategoricalScore m d [i],
     CategoricalMaxIndep m d [i], Uniform m d)
-    => PrimitiveChoice -> Int -> Int -> [d] -> m d
-geneTranscriptionModel primitiveChoice numObs n theta = do
+    => Int -> Int -> [d] -> m d
+geneTranscriptionModel numObs n theta = do
     let x0 = [5, 40]
 
     let simulateTrace :: m ([i], d, [d]) =
-            iterateP (geneTranscriptionKernel primitiveChoice theta) (x0, 0.0, [0.0, 0.0]) !! n
+            iterateP (geneTranscriptionKernel theta) (x0, 0.0, [0.0, 0.0]) !! n
 
     let foldF (_, t, timeInt) (accX, accT) = do
             if extractDouble t < capT then
@@ -129,9 +123,12 @@ differentiating the gene transcription model.
 \begin{code}
 getSamples :: Sampler [Double]
 getSamples =
-    replicateM 5 (geneTranscriptionModel NoAnnotationPrimitive numObs n
+    replicateM 5 (geneTranscriptionModel numObs n
                     (map log [18, 8, 1.5, 4]))
 \end{code}
+
+Differentiating the Model
+-------------------------
 
 We now apply GradInf to compute gradient estimates with respect
 to all four parameters simultaneously using the `ZipList` functor.
@@ -153,13 +150,12 @@ getGradientEstimates =
             let Coupled (accPA, accPB) = acc !! 1
             let horizon = fromDouble $ min 0.5 (capT - extractDouble tA)
             let timeScale = 1 / 20
-            let proteinAdj = 1.0
             abs ((accMB - accMA) + (toDouble mB - toDouble mA) * horizon) / fromDouble 10.4
-                + proteinAdj * abs ((accPB - accPA) + (toDouble pB - toDouble pA) * horizon) / fromDouble 22.3
+                + abs ((accPB - accPA) + (toDouble pB - toDouble pA) * horizon) / fromDouble 22.3
                 + abs (tB - tA) * timeScale
      in replicateM 10
             ( gradInfAD
-                (geneTranscriptionModel MaxIndepPrimitive numObs n . getZipList)
+                (geneTranscriptionModel numObs n . getZipList)
                 ( TwistedSMCInference 1 twistFunc ::
                     forall d i b mat. (DeterministicPrimitives d i b mat) =>
                     TwistedSMCInference Base CRN d i b

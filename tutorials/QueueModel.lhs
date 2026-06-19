@@ -2,7 +2,8 @@ In this example, we use GradInf to develop a new, lower-variance
 gradient estimator for an
 [M/M/C queue model](https://en.wikipedia.org/wiki/M/M/c_queue).
 
-== Setup
+Setup
+-----
 
 This example needs the following imports.
 
@@ -44,7 +45,8 @@ meanAndVariance xs = do
     (mu, var)
 \end{code}
 
-== Writing the Model
+Writing the Model
+-----------------
 
 We first write the Markov kernel for the model, which simulates
 a single queuing event.
@@ -123,6 +125,9 @@ The following plot illustrates sample paths of the M/M/c model
 at each of these parameters.
 
 ![](../images/plot_MMC_queue_traces_raw-crop.png)
+
+Differentiating the Model
+-------------------------
 
 Let us now run GradInf on this program, first using an inference
 scheme based on stratified importance resampling (SIR).

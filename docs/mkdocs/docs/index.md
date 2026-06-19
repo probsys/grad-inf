@@ -1,24 +1,19 @@
-<div align="center">
-  <img src="docs/assets/logo.png#gh-light-mode-only" alt="GradInf Logo" height="60">
-  <img src="docs/assets/logo-white.png#gh-dark-mode-only" alt="GradInf Logo" height="60">
-</div>
+<p align="center">
+  <img src="images/logo.png#gh-light-mode-only" alt="GradInf Logo" height="60">
+  <img src="images/logo-white.png#gh-dark-mode-only" alt="GradInf Logo" height="60">
+</p>
 
-
-# GradInf
+# GradInf: Gradient Estimation as Probabilistic Inference
 
 GradInf is a research package that provides the Haskell implementation
-of **gradient inference**, a new approach to gradient
+of *gradient inference*, a new approach to gradient
 estimation described in
 [this PLDI'26 paper](https://dl.acm.org/doi/abs/10.1145/3808321).
-
-[![Build Status](https://github.com/probsys/grad-inf/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/probsys/grad-inf/actions/workflows/ci.yml)
-[![](https://img.shields.io/badge/docs-main-blue.svg)](https://probsys.github.io/grad-inf/)
-[![DOI](https://img.shields.io/badge/article-DOI%3A10.1145%2F3808321-B31B1B)](https://dl.acm.org/doi/abs/10.1145/3808321)
 
 ## Overview
 
 <p align="center">
-  <img src="docs/assets/workflow-core.png" alt="Core GradInf Workflow" width="800">
+  <img src="images/workflow-core.png" alt="Core GradInf Workflow" width="800">
 </p>
 
 GradInf automatically synthesizes gradient estimators
@@ -74,16 +69,14 @@ print gradientEstimate
 
 Here, `stratifiedImportanceResamplingInferenceAlg 1` is an *inference strategy*
 which enables sound and efficient gradient estimation.
-
-To learn more, check out the [documentation](https://probsys.github.io/grad-inf).
-Additional tutorials and API details will be added shortly!
+See the tutorials in this documentation site for more details on the API.
 
   [1] *Monte Carlo Gradient Estimation in Machine Learning*, Shakir Mohamed, Mihaela Rosca, Michael Figurnov, and Andriy Mnih. *Journal of Machine Learning Research* 21, 132 (2020),
 
-## Reproducible Artifact
+## Index
 
-This repository contains core code for the `grad-inf` package and tutorials.
-For the full code to reproduce the paper's experiments, see the [artifact](https://zenodo.org/records/19079093).
+For more usage examples, check out the tutorial pages on applying GradInf to [queuing models](examples/QueueModel.md), [financial models](examples/OptionPricing.md), and [biochemical models](examples/GeneTranscription.md).
+*API documentation and additional tutorials will be added soon!*
 
 ## Citation
 
