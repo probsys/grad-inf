@@ -1,6 +1,5 @@
 <p align="center">
-  <img src="images/logo.png#gh-light-mode-only" alt="GradInf Logo" height="60">
-  <img src="images/logo-white.png#gh-dark-mode-only" alt="GradInf Logo" height="60">
+  <img src="images/logo.png" alt="GradInf Logo" height="20">
 </p>
 
 # GradInf: Gradient Estimation as Probabilistic Inference

@@ -1,6 +1,6 @@
 <div align="center">
-  <img src="docs/assets/logo.png#gh-light-mode-only" alt="GradInf Logo" height="60">
-  <img src="docs/assets/logo-white.png#gh-dark-mode-only" alt="GradInf Logo" height="60">
+  <img src="docs/assets/logo.png#gh-light-mode-only" alt="GradInf Logo" height="100">
+  <img src="docs/assets/logo-white.png#gh-dark-mode-only" alt="GradInf Logo" height="100">
 </div>
 
 

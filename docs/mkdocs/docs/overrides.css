@@ -13,3 +13,10 @@ p {
   background: white;
 }
 
+/* Force the inline index-page logo to its `height` attribute. Material's
+   `.md-typeset img { height: auto }` otherwise overrides it. */
+.md-typeset img[alt="GradInf Logo"] {
+  height: 80px !important;
+  width: auto !important;
+}
+
